@@ -1,4 +1,4 @@
-# spec_api
+# stuy-spec-api
 
 <a href='https://docs.google.com/spreadsheets/d/181bJAbSEepuMjQyhE7dueGexzs7844WE2J2OrlgI3YY/edit#gid=0'>Schema</a>  
 <a href='https://docs.google.com/spreadsheets/d/1yLMnI8QyKgLNptEgatTjg6nMBBcWMMC7mk4kzXO1exQ/edit#gid=0'>REST Endpoints</a>  
