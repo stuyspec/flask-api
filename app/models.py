@@ -25,24 +25,18 @@ class User(db.Model):
     articles = db.relationship('UserArticle', backref='uzer', lazy='dynamic')
     media = db.relationship('Media', backref='uzer', lazy='dynamic')
 
-class RoleUser(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    role_id = db.Column(db.Integer)
-
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    role = db.relationship('Role', backref='author', lazy='dynamic')
+RoleUser = db.Table('RoleUsers',
+    db.Column('role_id', db.Integer, db.ForeignKey('role.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
+)
 
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(200))
 
-class UserArticle(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.Integer)
-    article_id = db.Column(db.Integer)
-
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    article_id = db.Column(db.Integer, db.ForeignKey('article.id'))
+UserArticle = db.Table('UserArticles',
+    db.Column('article_id', db.Integer, db.ForeignKey('article.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
 
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -76,10 +70,10 @@ class Media(db.Model):
 
 
 
-class ArticleTag(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    article_id = db.Column(db.Integer)
-    tag_id = db.Column(db.Integer, db.ForeignKey('tag.id'))
+ArticleTag = db.Table('ArticleTags',
+    db.Column('article_id', db.Integer, db.ForeignKey('article.id')),
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'))
+)
 
 class Section(db.Model):
     id = db.Column(db.Integer, primary_key = True)
