@@ -2,6 +2,8 @@ from app import db
 from app import app
 from werkzeug.security import generate_password_hash, check_password_hash
 
+#----------------------------
+
 class Advertisement(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     url = db.Column(db.String(200))
@@ -12,6 +14,17 @@ class Issuu(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     code = db.Column(db.Integer)
 
+#----------------------------
+
+RoleUser = db.Table('RoleUser',
+    db.Column('role_id', db.Integer, db.ForeignKey('role.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
+)
+
+UserArticle = db.Table('UserArticle',
+    db.Column('article_id', db.Integer, db.ForeignKey('article.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
+)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -21,22 +34,28 @@ class User(db.Model):
     password = db.Column(db.String(200))
     email = db.Column(db.String(200))
 
-    role = db.relationship('RoleUser', backref='uzer', lazy='dynamic')
-    articles = db.relationship('UserArticle', backref='uzer', lazy='dynamic')
-    media = db.relationship('Media', backref='uzer', lazy='dynamic')
+    roles = db.relationship('Role', secondary=RoleUser, backref=db.backref('users', lazy='dynamic'))
 
-RoleUser = db.Table('RoleUsers',
-    db.Column('role_id', db.Integer, db.ForeignKey('role.id')),
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
-)
+    articles = db.relationship('Article', secondary=UserArticle, backref=db.backref('users', lazy='dynamic'))
+
+    media = db.relationship('Media', backref='user', lazy='dynamic')
 
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(200))
 
-UserArticle = db.Table('UserArticles',
+#----------------------------
+
+ArticleTag = db.Table('ArticleTag',
     db.Column('article_id', db.Integer, db.ForeignKey('article.id')),
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'))
+)
+
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(500))
+
+#----------------------------
 
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -47,13 +66,16 @@ class Article(db.Model):
     timestamp = db.Column(db.DateTime)
     volume = db.Column(db.Integer)
     issue = db.Column(db.Integer)
-    section_id = db.Column(db.Integer)
-    subsection_id = db.Column(db.Integer)
 
     posts = db.relationship('UserArticle', backref='author', lazy='dynamic')
     medias = db.relationship('Media', backref='author', lazy='dynamic')
+
     section_id = db.Column(db.Integer, db.ForeignKey('section.id'))
     subsection_id = db.Column(db.Integer, db.ForeignKey('subsection.id'))
+
+    tags = db.relationship('Tag', secondary=ArticleTag, backref=db.backref('articles', lazy='dynamic'))
+
+#----------------------------
 
 class Media(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -68,12 +90,10 @@ class Media(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     article_id = db.Column(db.Integer, db.ForeignKey('article.id'))
 
+    user = db.relationship(User,backref="Media")
+    article = db.relationship(Article,backref="Media")
 
-
-ArticleTag = db.Table('ArticleTags',
-    db.Column('article_id', db.Integer, db.ForeignKey('article.id')),
-    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'))
-)
+#----------------------------
 
 class Section(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -88,8 +108,5 @@ class Subsection(db.Model):
 
     foo = db.relationship('Article', backref='author', lazy='dynamic')
 
-class Tag(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(500))
+#----------------------------
 
-    foo = db.relationship('ArticleTag', backref='author', lazy='dynamic')
