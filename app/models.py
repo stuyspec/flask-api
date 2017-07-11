@@ -33,6 +33,7 @@ class User(db.Model):
     username = db.Column(db.String(200))
     password = db.Column(db.String(200))
     email = db.Column(db.String(200))
+    description = db.Column(db.Text)
 
     roles = db.relationship('Role', secondary=RoleUser, backref=db.backref('users', lazy='dynamic'))
 
