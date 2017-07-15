@@ -14,7 +14,6 @@ class Article(db.Model):
     isDraft = db.Column(db.Boolean)
 
     section_id = db.Column(db.Integer, db.ForeignKey('section.id'))
-    subsection_id = db.Column(db.Integer, db.ForeignKey('subsection.id'))
 
 
 class Section(db.Model):
