@@ -25,11 +25,3 @@ class Section(db.Model):
 
     article_id = db.relationship('Article', backref='section', lazy='dynamic')
 
-class Subsection(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(500))
-    slug = db.Column(db.String(500))
-    description = db.Column(db.Text)    
-
-    article_id = db.relationship('Article', backref='subsection', lazy='dynamic')
-
