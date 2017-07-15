@@ -8,8 +8,7 @@ class Article(db.Model):
     title = db.Column(db.String(500))
     slug = db.Column(db.String(500))
     content = db.Column(db.Text)
-    p_index = db.Column(db.Integer)
-    timestamp = db.Column(db.DateTime)
+    datetime = db.Column(db.DateTime)
     volume = db.Column(db.Integer)
     issue = db.Column(db.Integer)
 
