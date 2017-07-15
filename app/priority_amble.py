@@ -11,6 +11,7 @@ class Article(db.Model):
     datetime = db.Column(db.DateTime)
     volume = db.Column(db.Integer)
     issue = db.Column(db.Integer)
+    isDraft = db.Column(db.Boolean)
 
     section_id = db.Column(db.Integer, db.ForeignKey('section.id'))
     subsection_id = db.Column(db.Integer, db.ForeignKey('subsection.id'))
