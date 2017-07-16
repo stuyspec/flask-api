@@ -26,7 +26,7 @@ def return_descpt(section_slug,subsection_slug):
 @app.route('/sections/<string:section_slug>/subsection/<string:subsection_slug>/articles/', methods=['GET'], defaults={'article_slug': None}) 
 @app.route('/sections/<string:section_slug>/subsection/<string:subsection_slug>/articles/<string:article_slug>', methods=['GET']) 
 def articles_within(section_slug,subsection_slug,article_slug):
-    if article_slug != "None":
+    if article_slug != None and article_slug != "None":
         articles = models.Article.query.filter(models.Article.slug == article_slug).first().__dict__
         del articles['_sa_instance_state']
     elif subsection_slug == "main":
