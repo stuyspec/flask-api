@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -32,3 +32,50 @@ class Article(db.Model):
         return '<Article %r>' % (self.title)
 
 
+@app.route('/sections/<string:section_slug>', methods=['GET'])
+def show_section(section_slug):
+    targetedSection = Section.query.filter(Section.slug == section_slug).first()
+    return jsonify(
+        {
+            "name": targetedSection.name,
+            "description": targetedSection.description,
+            "slug": targetedSection.slug,
+        }
+    )
+
+@app.route('/sections/<string:section_slug>/articles', methods=['GET'])
+def show_section_articles(section_slug):
+    targetedSection = Section.query.filter(Section.slug == section_slug).first()
+    nonSerializableArticles = targetedSection.articles.all()
+    serializableArticles = []
+    for article in nonSerializableArticles:
+        serializableArticle = {
+            "title": article.title,
+            "content": article.content,
+            "volume": article.volume,
+            "issue": article.issue
+            }
+        serializableArticles.append( serializableArticle )
+    return jsonify(
+        {
+            "name": targetedSection.name,
+            "description": targetedSection.description,
+            "slug": targetedSection.slug,
+            "articles": serializableArticles
+        }
+    )
+
+@app.route('/sections/<string:section_slug>/articles/<string:article_slug>', methods=['GET'])
+def show_article(section_slug, article_slug):
+    targetedSection = Section.query.filter(Section.slug == section_slug).first()
+    allArticles = targetedSection.articles.all()
+    for article in allArticles:
+        if article.slug == article_slug:
+            return jsonify(
+            {
+                "title": article.title,
+                "content": article.content,
+                "volume": article.volume,
+                "issue": article.issue
+            }
+        )
