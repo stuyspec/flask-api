@@ -12,6 +12,11 @@ class Section(db.Model):
     slug = db.Column(db.String(64))
     description = db.Column(db.Text)
     articles = db.relationship('Article', backref='section', lazy='dynamic')
+    parent_id = db.Column(db.Integer, db.ForeignKey('section.id'))
+    subsections = db.relationship(
+        'Section',
+        backref=db.backref('parent', remote_side=[id])
+    )
 
     def __repr__(self):
         return '<Section %r>' % (self.name)
@@ -31,10 +36,17 @@ class Article(db.Model):
     def __repr__(self):
         return '<Article %r>' % (self.title)
 
-
-@app.route('/sections/<string:section_slug>', methods=['GET'])
-def show_section(section_slug):
+def find_section(section_slug, subsection_slug):
     targetedSection = Section.query.filter(Section.slug == section_slug).first()
+    if subsection_slug != 'main':
+        for subsection in targetedSection.subsections:
+            if subsection.slug == subsection_slug:
+                targetedSection = subsection
+    return targetedSection
+
+@app.route('/sections/<string:section_slug>/subsections/<string:subsection_slug>', methods=['GET'])
+def show_section(section_slug, subsection_slug):
+    targetedSection = find_section(section_slug, subsection_slug)
     return jsonify(
         {
             "name": targetedSection.name,
@@ -43,9 +55,9 @@ def show_section(section_slug):
         }
     )
 
-@app.route('/sections/<string:section_slug>/articles', methods=['GET'])
-def show_section_articles(section_slug):
-    targetedSection = Section.query.filter(Section.slug == section_slug).first()
+@app.route('/sections/<string:section_slug>/subsections/<string:subsection_slug>/articles', methods=['GET'])
+def show_section_articles(section_slug, subsection_slug):
+    targetedSection = find_section(section_slug, subsection_slug)
     nonSerializableArticles = targetedSection.articles.all()
     serializableArticles = []
     for article in nonSerializableArticles:
@@ -67,7 +79,7 @@ def show_section_articles(section_slug):
 
 @app.route('/sections/<string:section_slug>/articles/<string:article_slug>', methods=['GET'])
 def show_article(section_slug, article_slug):
-    targetedSection = Section.query.filter(Section.slug == section_slug).first()
+    targetedSection = find_section(section_slug, subsection_slug)
     allArticles = targetedSection.articles.all()
     for article in allArticles:
         if article.slug == article_slug:
