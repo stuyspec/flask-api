@@ -2,7 +2,10 @@
 	"id": 1,
 	"title": "Apples Rain in New York City",
 	"slug": "apples-rain-in-new-yori-city",
-	"content": "The content of the article.",
+	"content": [
+		"Paragraph1",
+		"Paragraph2"
+	],
 	"volume": 108,
 	"issue": 1,
 	"date": "July 19, 2017",
