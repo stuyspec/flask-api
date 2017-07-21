@@ -2,10 +2,7 @@
 	"id": 1,
 	"title": "Apples Rain in New York City",
 	"slug": "apples-rain-in-new-yori-city",
-	"content": [
-		"Paragraph1",
-		"Paragraph2"
-	],
+	"content": "<p>HTML that will be</p><p>dangerously inline set.</p>",
 	"volume": 108,
 	"issue": 1,
 	"date": "July 19, 2017",
