@@ -45,3 +45,21 @@ def articles_within(section_slug,subsection_slug,article_slug):
 
 
 #----------------------------------------------    
+
+@app.route('/newspaper/<int:volume>/<int:issue>', methods=['GET'])
+def retrieve_article_data(volume,issue):
+    articles = models.Article.query.filter(models.Article.volume == volume 
+        and models.Article.issue == issue).all()
+    articles = [u.__dict__ for u in articles]
+    for i in articles:
+        del i['_sa_instance_state']
+    issuu_code = models.Issuu.query.filter(models.Issuu.volume == volume 
+        and models.Issuu.issue == issue).first().code
+    return jsonify({"issuu_code": issuu_code, "articles": articles})
+
+@app.route('/user/<int:user_id>', methods=['GET'])
+def retrieve_user_data(user_id):
+    user =  models.User.query.get(user_id)
+    user_data = user.__dict__
+    del user_data['_sa_instance_state']
+    return jsonify( {"user_data": user_data} )
