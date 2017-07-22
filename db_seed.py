@@ -5,7 +5,7 @@ from datetime import datetime
 
 section_sample = models.Section(name="humor",slug="humorstuff",description="this is the humor department")
 
-subsection_sample = models.Subsection(name="humor",slug="humor_stuff",description="this is humor department")
+subsection_sample = models.Subsection(name="year_review",slug="more_humor_stuff",description="this is humor department")
 
 article_sample = models.Article(title="george thingy",slug="george_thingy",content="good riddance and thank god",
      datetime=datetime.today(),volume=111,issue=12,isDraft=False,section=section_sample,subsection=subsection_sample)
