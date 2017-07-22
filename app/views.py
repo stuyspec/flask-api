@@ -70,5 +70,8 @@ def all_articles():
     articles = [article.__dict__ for article in articles]
     for article in articles:
         del article['_sa_instance_state']
+    limit = request.args.get('limit')
+    if limit is not None:
+        articles = articles[:int(limit)]
     return jsonify( {"articles": articles} )
 #----------------------------------------------
