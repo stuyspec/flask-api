@@ -1,47 +1,55 @@
+#!flask/bin/python
+from app import models, db
+from datetime import datetime
 
-import sqlite3
 
-articles = [
-    { "title": "My article", "content": "blah blah blah", "author": 1, "date": "2017-07-16" },
-    { "title": "My article 1", "content": "blah blah blah", "author": 2, "date": "2017-07-16"},
-    { "title": "My article 2", "content": "blah blah blah", "author": 2, "date": "2017-07-16"},
-    { "title": "My article 3", "content": "blah blah blah", "author": 2, "date": "2017-07-16"},
-    { "title": "My article 4", "content": "blah blah blah", "author": 2, "date": "2017-07-16"},
-]
+section_sample = models.Section(name="humor",slug="humorstuff",description="this is the humor department")
 
-authors = [
-    { "id": 1, "name": "Nicholas"},
-    { "id": 2, "name": "Jonathan"}
-]
+subsection_sample = models.Subsection(name="humor",slug="humor_stuff",description="this is humor department")
 
-conn = sqlite3.connect('spec.db')
+article_sample = models.Article(title="george thingy",slug="george_thingy",content="good riddance and thank god",
+     datetime=datetime.today(),volume=111,issue=12,isDraft=False,section=section_sample,subsection=subsection_sample)
 
-c = conn.cursor()
 
-c.execute("DROP TABLE IF EXISTS articles");
+more_sample = models.Article(title="jason thingy",slug="jason_thingy",content="gasdsaood riddance and thank god",
+     datetime=datetime.today(),volume=111,issue=12,isDraft=False,section=section_sample,subsection=subsection_sample)
 
-c.execute("DROP TABLE IF EXISTS authors");
+db.session.add(section_sample)
+db.session.add(subsection_sample)
+db.session.add(article_sample)
+db.session.add(more_sample)
+db.session.commit()
 
-conn.commit()
 
-CREATE_ARTICLES_TABLE_STATEMENT = "CREATE TABLE IF NOT EXISTS articles ('title' string, 'content' string, 'author_id' integer, 'date' date);"
+article_sample = models.Article(title="geoasdsadrge potato",slug="geoasfe_thingy",content="good fsafagod",
+     datetime=datetime.today(),volume=5,issue=112,isDraft=False,section=section_sample,subsection=subsection_sample)
 
-CREATE_AUTHORS_TABLE_STATEMENT = "CREATE TABLE IF NOT EXISTS  authors ('id' integer, 'name' string);"
+more_sample = models.Article(title="jasonasnj thingy",slug="jasond_thingy",content="gsfaafagod",
+     datetime=datetime.today(),volume=5,issue=112,isDraft=True,section=section_sample,subsection=subsection_sample)
 
-c.execute(CREATE_ARTICLES_TABLE_STATEMENT);
-c.execute(CREATE_AUTHORS_TABLE_STATEMENT);
+db.session.add(article_sample)
+db.session.add(more_sample)
 
-conn.commit()
+db.session.commit()
 
-ARTICLES_SQL_STATEMENT = "INSERT INTO articles (title, content, author_id, date) VALUES ('%s', '%s', '%s', '%s');"
+issuu_one = models.Issuu(code="111/12", volume=111, issue=12)
 
-for article in articles:
-    c.execute(ARTICLES_SQL_STATEMENT % (article["title"], article["content"], article["author"], article["date"]))
+issuu_two = models.Issuu(code="5/112", volume=5, issue=112)
 
-AUTHORS_SQL_STATEMENT = "INSERT INTO authors (id, name) VALUES ('%s', '%s');"
+db.session.add(issuu_one)
+db.session.add(issuu_two)
+db.session.commit()
 
-for author in authors:
-    c.execute(AUTHORS_SQL_STATEMENT % (author["id"], author["name"]))
 
-conn.commit()
-conn.close()
+issuu_one = models.User(firstname="jason", lastname="kao", username="jkao",password="donut",email="jkao@stuy.edu",description="avocado")
+
+
+issuu_two = models.User(firstname="geprge", lastname="zheng", username="gz",password="asad",email="gzhen@stuy.edu",description="peanut")
+
+
+db.session.add(issuu_one)
+db.session.add(issuu_two)
+db.session.commit()
+
+
+print "done"
