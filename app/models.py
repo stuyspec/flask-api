@@ -1,34 +1,58 @@
-from app import db
-from app import app
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import render_template, flash, redirect, request, session, url_for, jsonify, make_response
+from app import app, db, models
 
 
-class Article(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    title = db.Column(db.String(500))
-    slug = db.Column(db.String(500))
-    content = db.Column(db.Text)
-    datetime = db.Column(db.DateTime)
-    volume = db.Column(db.Integer)
-    issue = db.Column(db.Integer)
-    isDraft = db.Column(db.Boolean)
 
-    section_id = db.Column(db.Integer, db.ForeignKey('section.id'))
-    subsection_id = db.Column(db.Integer, db.ForeignKey('subsection.id'))
+#----------------------------------------------    
+
+@app.errorhandler(400)
+def not_found(error):
+    return make_response(jsonify( { 'error': 'Bad request' } ), 400)
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify( { 'error': 'Not found' } ), 404)
+
+#----------------------------------------------
+
+@app.route('/sections/<string:section_slug>/subsection/<string:subsection_slug>', methods=['GET'])
+def return_descpt(section_slug,subsection_slug):
+    if subsection_slug == "main":
+        target = models.Section.query.filter(models.Section.slug == section_slug).first()
+    else:
+        target = models.Subsection.query.filter(models.Subsection.slug == subsection_slug).first()
+    return jsonify({"description": target.description})
+
+@app.route('/sections/<string:section_slug>/subsection/<string:subsection_slug>/articles/', methods=['GET'], defaults={'article_slug': None}) 
+@app.route('/sections/<string:section_slug>/subsection/<string:subsection_slug>/articles/<string:article_slug>', methods=['GET']) 
+def articles_within(section_slug,subsection_slug,article_slug):
+    if article_slug != None and article_slug != "None":
+        articles = models.Article.query.filter(models.Article.slug == article_slug).first().__dict__
+        del articles['_sa_instance_state']
+    elif subsection_slug == "main":
+        section =  models.Section.query.filter(models.Section.slug == section_slug).first()
+        articles = models.Article.query.filter(models.Article.section == section).all()
+        articles = [u.__dict__ for u in articles]
+        for i in articles:
+            del i['_sa_instance_state']
+    else:
+        subsection =  models.Subsection.query.filter(models.Subsection.slug == subsection_slug).first()
+        articles = models.Article.query.filter(models.Article.subsection == subsection).all()
+        articles = [u.__dict__ for u in articles]
+        for i in articles:
+            del i['_sa_instance_state']
+    return jsonify({"articles": articles})
 
 
-class Section(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(500))
-    slug = db.Column(db.String(500))
-    description = db.Column(db.Text)
+#----------------------------------------------    
 
-    article_id = db.relationship('Article', backref='section', lazy='dynamic')
-
-class Subsection(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(500))
-    slug = db.Column(db.String(500))
-    description = db.Column(db.Text)
-
-    article_id = db.relationship('Article', backref='subsection', lazy='dynamic')
+@app.route('/newspaper/<int:volume>/<int:issue>', methods=['GET'])
+def retrieve_article_data(volume,issue):
+    articles = models.Article.query.filter(models.Article.volume == volume 
+        and models.Article.issue == issue).all()
+    articles = [u.__dict__ for u in articles]
+    for i in articles:
+        del i['_sa_instance_state']
+    issuu_code = models.Issuu.query.filter(models.Issuu.volume == volume 
+        and models.Issuu.issue == issue).first().code
+    return jsonify({"issuu_code": issuu_code, "articles": articles})
