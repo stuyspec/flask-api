@@ -63,3 +63,12 @@ def retrieve_user_data(user_id):
     user_data = user.__dict__
     del user_data['_sa_instance_state']
     return jsonify( {"user_data": user_data} )
+
+@app.route('/articles/', methods=['GET'])
+def all_articles():
+    articles = models.Article.query.all()
+    articles = [article.__dict__ for article in articles]
+    for article in articles:
+        del article['_sa_instance_state']
+    return jsonify( {"articles": articles} )
+#----------------------------------------------
