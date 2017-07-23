@@ -3,7 +3,8 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 # The base directory for the database (DO NOT CHANGE, unless you know EXACTLY what you are doing)
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
+
+SQLALCHEMY_DATABASE_URI = 'postgresql://test:test@localhost:5432/spec'
 
 # More sql setup, reference previous comment
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
