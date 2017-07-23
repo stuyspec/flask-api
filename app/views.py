@@ -15,6 +15,16 @@ def not_found(error):
 
 #----------------------------------------------
 
+@app.route('/')
+def all_article():
+    articles = models.Article.query.all()
+    articles = [article.__dict__ for article in articles]
+    for article in articles:
+        del article['_sa_instance_state']
+    limit = request.args.get('limit')
+    if limit is not None:
+        articles = articles[:int(limit)]
+    return jsonify( {"articles": articles} )
 @app.route('/sections/<string:section_slug>/subsection/<string:subsection_slug>', methods=['GET'])
 def return_descpt(section_slug,subsection_slug):
     if subsection_slug == "main":
