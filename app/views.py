@@ -1,4 +1,5 @@
-from flask import render_template, flash, redirect, request, session, url_for, jsonify, make_response
+from flask import render_template, flash, redirect
+from flask import request, session, url_for, jsonify, make_response
 from app import app, db, models
 
 
@@ -16,7 +17,8 @@ def not_found(error):
 #----------------------------------------------
 
 
-@app.route('/sections/<string:section_slug>/subsection/<string:subsection_slug>' )
+@app.route('/sections/<string:section_slug>/' + \
+           'subsection/<string:subsection_slug>' )
 def get_section_by_slug(section_slug,subsection_slug):
   if subsection_slug == "main":
     target = models.Section.query.filter(
