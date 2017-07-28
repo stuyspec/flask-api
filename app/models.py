@@ -22,6 +22,7 @@ class Section(db.Model):
   name = db.Column(db.String(500))
   slug = db.Column(db.String(500))
   description = db.Column(db.Text)
+  parent_slug = db.Column(db.String(500))
 
   article_id = db.relationship('Article', backref='section', lazy='dynamic')
 
