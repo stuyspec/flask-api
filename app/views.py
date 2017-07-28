@@ -59,7 +59,7 @@ def get_section_articles(section_slug,subsection_slug,article_slug):
     "content": article.content, 
     "datetime": article.datetime, 
     "id": article.id, 
-    "isDraft": article.isDraft, 
+    "is_draft": article.is_draft, 
     "issue": article.issue, 
     "section_id": article.section_id, 
     "slug": article.slug, 
@@ -74,13 +74,13 @@ def get_section_articles(section_slug,subsection_slug,article_slug):
 def retrieve_article_data(volume,issue):
   articles = models.Article.query.filter(models.Article.volume == volume 
     and models.Article.issue == issue).all()
-  secure_articles = []
+  converted_articles = [] #Container for articles that has been converted to a dictionary to display data
   for article in articles:
     article_dict = {
     "content": article.content, 
     "datetime": article.datetime, 
     "id": article.id, 
-    "isDraft": article.isDraft, 
+    "is_draft": article.is_draft, 
     "issue": article.issue, 
     "section_id": article.section_id, 
     "slug": article.slug, 
@@ -88,21 +88,21 @@ def retrieve_article_data(volume,issue):
     "title": article.title, 
     "volume": article.volume
           }   
-    secure_articles.append(article_dict)
+    converted_articles.append(article_dict)
   issuu_code = models.Issuu.query.filter(models.Issuu.volume == volume 
     and models.Issuu.issue == issue).first().code
   return jsonify({"issuu_code": issuu_code, "articles": secure_articles})
 
 @app.route('/list_articles/articles/' )
-def all_articles():
-  articles = models.Article.query.all()
+def get_all_articles():
+  articlesInIssue = models.Article.query.all()
   secure_articles = []
-  for article in articles:
+  for article in articlesInIssue:
     article_dict = {
     "content": article.content, 
     "datetime": article.datetime, 
     "id": article.id, 
-    "isDraft": article.isDraft, 
+    "is_draft": article.is_draft, 
     "issue": article.issue, 
     "section_id": article.section_id, 
     "slug": article.slug, 
@@ -118,7 +118,7 @@ def all_articles():
 
 #---------------------------------------------- User data endpoints
 @app.route('/user/<int:user_id>')
-def retrieve_user_data(user_id):
+def get_user(user_id):
   user =  models.User.query.get(user_id)
   user_data = {
   "description": user.description, 
