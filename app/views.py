@@ -24,11 +24,13 @@ def get_section_by_slug(section_slug,subsection_slug):
     target = models.Section.query.filter(
       models.Section.slug == section_slug
         ).first()
+    return jsonify({"description": target.description})
   else:
     target = models.Subsection.query.filter(
       models.Subsection.slug == subsection_slug
         ).first()
-  return jsonify({"description": target.description})
+    if target.parent_slug == section_slug: 
+      return jsonify({"description": target.description})
 article_route = '''
 /sections/<string:section_slug>/subsection/<string:subsection_slug>/articles/
 '''
