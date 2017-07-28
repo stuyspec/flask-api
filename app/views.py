@@ -4,7 +4,7 @@ from app import app, db, models
 
 
 
-#----------------------------------------------  
+#----------------------------------------------  Error Handlers
 
 @app.errorhandler(400)
 def not_found(error):
@@ -14,7 +14,7 @@ def not_found(error):
 def not_found(error):
   return make_response(jsonify( { 'error': 'Not found' } ), 404)
 
-#----------------------------------------------
+#---------------------------------------------- Section and Article Endpoints
 
 
 @app.route('/sections/<string:section_slug>/' + \
@@ -70,9 +70,6 @@ def get_section_articles(section_slug,subsection_slug,article_slug):
     secure_articles.append(article_dict)
   return jsonify({"articles": secure_articles})
 
-
-#----------------------------------------------  
-
 @app.route('/newspaper/<int:volume>/<int:issue>' )
 def retrieve_article_data(volume,issue):
   articles = models.Article.query.filter(models.Article.volume == volume 
@@ -96,19 +93,6 @@ def retrieve_article_data(volume,issue):
     and models.Issuu.issue == issue).first().code
   return jsonify({"issuu_code": issuu_code, "articles": secure_articles})
 
-@app.route('/user/<int:user_id>')
-def retrieve_user_data(user_id):
-  user =  models.User.query.get(user_id)
-  user_data = {
-  "description": user.description, 
-  "email": user.email, 
-  "firstname": user.firstname, 
-  "id": user.id, 
-  "lastname": user.lastname, 
-  "username": user.username
-  }
-  return jsonify( {"user_data": user_data} )
-
 @app.route('/list_articles/articles/' )
 def all_articles():
   articles = models.Article.query.all()
@@ -131,4 +115,18 @@ def all_articles():
   if limit is not None:
     secure_articles = secure_articles[:int(limit)]
   return jsonify( {"articles": secure_articles} )
+
+#---------------------------------------------- User data endpoints
+@app.route('/user/<int:user_id>')
+def retrieve_user_data(user_id):
+  user =  models.User.query.get(user_id)
+  user_data = {
+  "description": user.description, 
+  "email": user.email, 
+  "firstname": user.firstname, 
+  "id": user.id, 
+  "lastname": user.lastname, 
+  "username": user.username
+  }
+  return jsonify( {"user_data": user_data} )
 #----------------------------------------------
