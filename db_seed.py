@@ -109,6 +109,3 @@ issuu_two = models.User(
 db.session.add(issuu_one)
 db.session.add(issuu_two)
 db.session.commit()
-
-
-print "done"
