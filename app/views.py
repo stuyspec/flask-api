@@ -70,7 +70,7 @@ def articles_in_section(section_slug, subsection_slug, article_slug):
 #----------------------------------------------
 
 @app.route('/newspaper/<int:volume>/<int:issue>', methods=['GET'])
-def retrieve_article_data(volume,issue):
+def get_articles_in_issue(volume,issue):
     articles = models.Article.query.filter(models.Article.volume == volume
         and models.Article.issue == issue).all()
     secure_articles = []
@@ -93,7 +93,7 @@ def retrieve_article_data(volume,issue):
     return jsonify({"issuu_code": issuu_code, "articles": secure_articles})
 
 @app.route('/user/<int:user_id>', methods=['GET'])
-def retrieve_user_data(user_id):
+def get_user(user_id):
     user =  models.User.query.get(user_id)
     user_data = {
     "description": user.description,
@@ -107,7 +107,7 @@ def retrieve_user_data(user_id):
     return jsonify( {"user_data": user_data} )
 
 @app.route('/list_articles/articles/', methods=['GET'])
-def all_articles():
+def list_articles():
     articles = models.Article.query.all()
     secure_articles = []
     for article in articles:
