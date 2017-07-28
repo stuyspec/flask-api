@@ -71,7 +71,7 @@ def get_section_articles(section_slug,subsection_slug,article_slug):
   return jsonify({"articles": secure_articles})
 
 @app.route('/newspaper/<int:volume>/<int:issue>' )
-def retrieve_article_data(volume,issue):
+def get_issue_articles(volume,issue):
   articles = models.Article.query.filter(models.Article.volume == volume 
     and models.Article.issue == issue).all()
   converted_articles = [] #Container for articles that has been converted to a dictionary to display data
