@@ -7,8 +7,8 @@ pre_meta = MetaData()
 post_meta = MetaData()
 user = Table('user', post_meta,
     Column('id', Integer, primary_key=True, nullable=False),
-    Column('firstname', String(length=200)),
-    Column('lastname', String(length=200)),
+    Column('first_name', String(length=200)),
+    Column('last_name', String(length=200)),
     Column('username', String(length=200)),
     Column('password', String(length=200)),
     Column('email', String(length=200)),

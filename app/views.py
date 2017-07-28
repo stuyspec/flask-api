@@ -3,7 +3,7 @@ from app import app, db, models
 
 
 
-#----------------------------------------------    
+#----------------------------------------------
 
 @app.errorhandler(400)
 def not_found(error):
@@ -16,25 +16,25 @@ def not_found(error):
 #----------------------------------------------
 
 
-@app.route('/get_section_by_slug/sections/<string:section_slug>/subsection/<string:subsection_slug>', methods=['GET'])
-def return_description(section_slug,subsection_slug):
+@app.route('/sections/<string:section_slug>/subsection/<string:subsection_slug>', methods=['GET'])
+def get_section_by_slug(section_slug, subsection_slug):
     if subsection_slug == "main":
         target = models.Section.query.filter(
             models.Section.slug == section_slug
-                ).first()
+        ).first()
     else:
         target = models.Subsection.query.filter(
             models.Subsection.slug == subsection_slug
-                ).first()
+        ).first()
     return jsonify({"description": target.description})
 
-@app.route('/get_section_articles/sections/<string:section_slug>/subsection/<string:subsection_slug>/articles/', methods=['GET'], defaults={'article_slug': None}) 
-@app.route('/get_section_articles/sections/<string:section_slug>/subsection/<string:subsection_slug>/articles/<string:article_slug>', methods=['GET']) 
-def articles_in_section(section_slug,subsection_slug,article_slug):
+@app.route('/sections/<string:section_slug>/subsection/<string:subsection_slug>/articles/', methods=['GET'], defaults={'article_slug': None})
+@app.route('/sections/<string:section_slug>/subsection/<string:subsection_slug>/articles/<string:article_slug>', methods=['GET'])
+def articles_in_section(section_slug, subsection_slug, article_slug):
     if article_slug != None and article_slug != "None":
         articles = [models.Article.query.filter(
             models.Article.slug == article_slug
-                ).first()]
+        ).first()]
     elif subsection_slug == "main":
         section =  models.Section.query.filter(
             models.Section.slug == section_slug
@@ -52,43 +52,43 @@ def articles_in_section(section_slug,subsection_slug,article_slug):
     secure_articles = []
     for article in articles:
         article_dict = {
-      "content": article.content, 
-      "datetime": article.datetime, 
-      "id": article.id, 
-      "isDraft": article.isDraft, 
-      "issue": article.issue, 
-      "section_id": article.section_id, 
-      "slug": article.slug, 
-      "subsection_id": article.subsection_id, 
-      "title": article.title, 
+      "content": article.content,
+      "dateTime": article.datetime,
+      "id": article.id,
+      "isDraft": article.isDraft,
+      "issue": article.issue,
+      "sectionId": article.section_id,
+      "slug": article.slug,
+      "subsectionId": article.subsection_id,
+      "title": article.title,
       "volume": article.volume
-                    }   
+                    }
         secure_articles.append(article_dict)
     return jsonify({"articles": secure_articles})
 
 
-#----------------------------------------------    
+#----------------------------------------------
 
 @app.route('/newspaper/<int:volume>/<int:issue>', methods=['GET'])
 def retrieve_article_data(volume,issue):
-    articles = models.Article.query.filter(models.Article.volume == volume 
+    articles = models.Article.query.filter(models.Article.volume == volume
         and models.Article.issue == issue).all()
     secure_articles = []
     for article in articles:
         article_dict = {
-      "content": article.content, 
-      "datetime": article.datetime, 
-      "id": article.id, 
-      "isDraft": article.isDraft, 
-      "issue": article.issue, 
-      "section_id": article.section_id, 
-      "slug": article.slug, 
-      "subsection_id": article.subsection_id, 
-      "title": article.title, 
+      "content": article.content,
+      "dateTime": article.date_time,
+      "id": article.id,
+      "isDraft": article.is_draft,
+      "issue": article.issue,
+      "sectionId": article.section_id,
+      "slug": article.slug,
+      "subsectionId": article.subsection_id,
+      "title": article.title,
       "volume": article.volume
-                    }   
+                    }
         secure_articles.append(article_dict)
-    issuu_code = models.Issuu.query.filter(models.Issuu.volume == volume 
+    issuu_code = models.Issuu.query.filter(models.Issuu.volume == volume
         and models.Issuu.issue == issue).first().code
     return jsonify({"issuu_code": issuu_code, "articles": secure_articles})
 
@@ -96,12 +96,12 @@ def retrieve_article_data(volume,issue):
 def retrieve_user_data(user_id):
     user =  models.User.query.get(user_id)
     user_data = {
-    "description": user.description, 
-    "email": user.email, 
-    "firstname": user.firstname, 
-    "id": user.id, 
-    "lastname": user.lastname, 
-    "password": user.password, 
+    "description": user.description,
+    "email": user.email,
+    "firstName": user.first_name,
+    "id": user.id,
+    "lastName": user.last_name,
+    "password": user.password,
     "username": user.username
   }
     return jsonify( {"user_data": user_data} )
@@ -112,17 +112,17 @@ def all_articles():
     secure_articles = []
     for article in articles:
         article_dict = {
-      "content": article.content, 
-      "datetime": article.datetime, 
-      "id": article.id, 
-      "isDraft": article.isDraft, 
-      "issue": article.issue, 
-      "section_id": article.section_id, 
-      "slug": article.slug, 
-      "subsection_id": article.subsection_id, 
-      "title": article.title, 
+      "content": article.content,
+      "dateTime": article.date_time,
+      "id": article.id,
+      "isDraft": article.is_draft,
+      "issue": article.issue,
+      "sectionId": article.section_id,
+      "slug": article.slug,
+      "subsectionId": article.subsection_id,
+      "title": article.title,
       "volume": article.volume
-                    }   
+                    }
         secure_articles.append(article_dict)
     limit = request.args.get('limit')
     if limit is not None:

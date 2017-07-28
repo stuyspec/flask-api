@@ -8,10 +8,10 @@ class Article(db.Model):
   title = db.Column(db.String(500))
   slug = db.Column(db.String(500))
   content = db.Column(db.Text)
-  datetime = db.Column(db.DateTime)
+  date_time = db.Column(db.DateTime)
   volume = db.Column(db.Integer)
   issue = db.Column(db.Integer)
-  isDraft = db.Column(db.Boolean)
+  is_draft = db.Column(db.Boolean)
 
   section_id = db.Column(db.Integer, db.ForeignKey('section.id'))
   subsection_id = db.Column(db.Integer, db.ForeignKey('subsection.id'))
@@ -41,8 +41,8 @@ class Issuu(db.Model):
 
 class User(db.Model):
   id = db.Column(db.Integer, primary_key = True)
-  firstname = db.Column(db.String(200))
-  lastname = db.Column(db.String(200))
+  first_name = db.Column(db.String(200))
+  last_name = db.Column(db.String(200))
   username = db.Column(db.String(200))
   password = db.Column(db.String(200))
   email = db.Column(db.String(200))
