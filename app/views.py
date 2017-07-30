@@ -149,7 +149,7 @@ def create_article():
                            subsection = None) #remove this after section and subsection become part of the same model
   db.session.add(article)
   db.session.commit()
-  return jsonify({"status":"Section has been added"})
+  return jsonify({"status":"Article has been added"})
 @app.route('/create_section/sections/', methods=['POST'])
 def create_section():
   section = models.Section(name= request.form["name"],
@@ -164,7 +164,7 @@ def delete_section(section_slug):
   section = models.Section.query.filter_by(slug=section_slug).first()
   db.session.delete(section)
   db.session.commit()
-  return jsonify({"Status":"Article has been deleted"})
+  return jsonify({"Status":"Section has been deleted"})
 @app.route('/delete_article/articles/<string:article_slug>', methods = ['DELETE'])
 def delete_article(article_slug):
   article = models.Article.query.filter_by(slug = article_slug).first()
