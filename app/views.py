@@ -16,7 +16,6 @@ def not_found(error):
 
 #---------------------------------------------- Section and Article Endpoints
 
-
 @app.route('/sections/<string:section_slug>/' + \
            'subsection/<string:subsection_slug>' )
 def get_section_by_slug(section_slug,subsection_slug):
@@ -31,9 +30,7 @@ def get_section_by_slug(section_slug,subsection_slug):
         ).first()
     if target.parent_slug == section_slug: 
       return jsonify({"description": target.description})
-article_route = '''
-/sections/<string:section_slug>/subsection/<string:subsection_slug>/articles/
-'''
+article_route = '''/sections/<string:section_slug>/subsection/<string:subsection_slug>/articles/'''
 @app.route(article_route , defaults={'article_slug': None}) 
 @app.route(article_route + '<string:article_slug>' ) 
 def get_section_articles(section_slug,subsection_slug,article_slug):
