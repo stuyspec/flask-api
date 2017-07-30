@@ -1,5 +1,6 @@
 from flask import render_template, flash, redirect, request, session, url_for, jsonify, make_response
 from app import app, db, models
+import datetime
 
 
 
@@ -31,7 +32,7 @@ def return_description(section_slug,subsection_slug):
 @app.route('/get_section_articles/sections/<string:section_slug>/subsection/<string:subsection_slug>/articles/', methods=['GET'], defaults={'article_slug': None}) 
 @app.route('/get_section_articles/sections/<string:section_slug>/subsection/<string:subsection_slug>/articles/<string:article_slug>', methods=['GET']) 
 def articles_in_section(section_slug,subsection_slug,article_slug):
-    if article_slug != None and article_slug != "None":
+    if article_slug is not None and article_slug is not "None":
         articles = [models.Article.query.filter(
             models.Article.slug == article_slug
                 ).first()]
@@ -128,4 +129,78 @@ def all_articles():
     if limit is not None:
         secure_articles = secure_articles[:int(limit)]
     return jsonify( {"articles": secure_articles} )
-#----------------------------------------------
+#---------------------------------------------- POST endpoints
+def find_section_of_article(section_name):
+  section = models.Section.query.filter(models.Section.name==section_name).first()
+  if section == None:
+    return None
+  else:
+    return section
+@app.route('/create_article/articles', methods=['POST'])
+def create_article():
+  article = models.Article(title = request.form["title"],
+                           slug = request.form["slug"],
+                           content = request.form["content"],
+                           datetime = datetime.datetime.utcnow(),
+                           volume = int(request.form["volume"]),
+                           issue = int(request.form["issue"]),
+                           isDraft = request.form["isDraft"],
+                           section = find_section_of_article(request.form["section"]),
+                           subsection = None) #remove this after section and subsection become part of the same model
+  db.session.add(article)
+  db.session.commit()
+  return jsonify({"status":"Section has been added"})
+@app.route('/create_section/sections/', methods=['POST'])
+def create_section():
+  section = models.Section(name= request.form["name"],
+                           slug= request.form["slug"],
+                           description= request.form["description"])
+  db.session.add(section)
+  db.session.commit()
+  return jsonify({"Status": "Section has been sucessfully added"})
+#---------------------------------------------- DELETE endpoints
+@app.route('/delete_section/sections/<string:section_slug>', methods =['DELETE'])
+def delete_section(section_slug):
+  section = models.Section.query.filter_by(slug=section_slug).first()
+  db.session.delete(section)
+  db.session.commit()
+  return jsonify({"Status":"Article has been deleted"})
+@app.route('/delete_article/articles/<string:article_slug>', methods = ['DELETE'])
+def delete_article(article_slug):
+  article = models.Article.query.filter_by(slug = article_slug).first()
+  db.session.delete(article)
+  db.session.commit()
+  return jsonify({"Status":"Article has been deleted"})
+#---------------------------------------------- PUT endpoints
+@app.route('/update_section/sections/<string:section_slug>', methods =['PUT'])
+def update_section(section_slug):
+  section = models.Section.query.filter_by(slug=section_slug).first()
+  if request.form['name'] is not None:
+    section.name = request.form['name']
+  if request.form['slug'] is not None:
+    section.slug = request.form['slug']
+  if request.form['description'] is not None:
+    section.description = request.form['description']
+  db.session.commit()
+  return jsonify({"Status":"Section has been updated"})
+@app.route('/update_article/articles/<string:article_slug>', methods =['PUT'])
+def update_article(article_slug):
+  article = models.Article.query.filter_by(slug = article_slug).first()
+  if request.form['title'] is not None:
+    article.title = request.form['title']
+  if request.form['slug'] is not None:
+    article.slug = request.form['slug']
+  if request.form['content'] is not None:
+    article.content = request.form['content']
+  if request.form['volume'] is not None:
+    article.volume = request.form['volume']
+  if request.form['issue'] is not None:
+    article.issue = request.form['issue']
+  if request.form['isDraft'] is not None:
+    article.isDraft = request.form['isDraft']
+  if request.form['section'] is not None:
+    article.section = find_section_of_article(request.form['section'])
+  article.datetime = datetime.datetime.utcnow()
+  db.session.commit()
+  return jsonify({"Status":"Article has been updated"})
+#---------------------------------------------- 
