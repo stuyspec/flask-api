@@ -1,20 +1,17 @@
 from sqlalchemy import *
-from migrate import *
 
-
-from migrate.changeset import schema
 pre_meta = MetaData()
 post_meta = MetaData()
-user = Table('user', post_meta,
-    Column('id', Integer, primary_key=True, nullable=False),
-    Column('fname', String(length=128)),
-    Column('lname', String(length=128)),
-    Column('nickname', String(length=128)),
-    Column('username', String(length=128)),
-    Column('password', String(length=1024)),
-    Column('email', String(length=1024)),
-    Column('permissions', String(length=1024)),
-)
+user = Table('users', post_meta,
+             Column('id', Integer, primary_key=True, nullable=False),
+             Column('fname', String(length=128)),
+             Column('lname', String(length=128)),
+             Column('nickname', String(length=128)),
+             Column('username', String(length=128)),
+             Column('password', String(length=1024)),
+             Column('email', String(length=1024)),
+             Column('permissions', String(length=1024)),
+             )
 
 
 def upgrade(migrate_engine):

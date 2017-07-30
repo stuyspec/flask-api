@@ -1,9 +1,11 @@
 #!flask/bin/python
+import os.path
+
 from migrate.versioning import api
+
+from app import db
 from config import SQLALCHEMY_DATABASE_URI
 from config import SQLALCHEMY_MIGRATE_REPO
-from app import db
-import os.path
 
 # Script to create the database -- DO NOT RUN
 
@@ -16,4 +18,4 @@ else:
     try:
         api.version_control(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO, api.version(SQLALCHEMY_MIGRATE_REPO))
     except:
-    	   print "Database already created"
+        print "Database already created"

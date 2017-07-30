@@ -1,32 +1,29 @@
 from sqlalchemy import *
-from migrate import *
 
-
-from migrate.changeset import schema
 pre_meta = MetaData()
 post_meta = MetaData()
-user = Table('user', pre_meta,
-    Column('id', INTEGER, primary_key=True, nullable=False),
-    Column('fname', VARCHAR(length=128)),
-    Column('lname', VARCHAR(length=128)),
-    Column('nickname', VARCHAR(length=128)),
-    Column('username', VARCHAR(length=128)),
-    Column('password', VARCHAR(length=1024)),
-    Column('email', VARCHAR(length=1024)),
-    Column('permissions', VARCHAR(length=1024)),
-)
+user = Table('users', pre_meta,
+             Column('id', INTEGER, primary_key=True, nullable=False),
+             Column('fname', VARCHAR(length=128)),
+             Column('lname', VARCHAR(length=128)),
+             Column('nickname', VARCHAR(length=128)),
+             Column('username', VARCHAR(length=128)),
+             Column('password', VARCHAR(length=1024)),
+             Column('email', VARCHAR(length=1024)),
+             Column('permissions', VARCHAR(length=1024)),
+             )
 
-advertisement = Table('advertisement', post_meta,
-    Column('id', Integer, primary_key=True, nullable=False),
-    Column('url', String(length=200), primary_key=True, nullable=False),
-    Column('name', String(length=200), primary_key=True, nullable=False),
-    Column('importance', Integer, primary_key=True, nullable=False),
-)
+advertisement = Table('advertisements', post_meta,
+                      Column('id', Integer, primary_key=True, nullable=False),
+                      Column('url', String(length=200), primary_key=True, nullable=False),
+                      Column('name', String(length=200), primary_key=True, nullable=False),
+                      Column('importance', Integer, primary_key=True, nullable=False),
+                      )
 
 issuu = Table('issuu', post_meta,
-    Column('id', Integer, primary_key=True, nullable=False),
-    Column('code', Integer, primary_key=True, nullable=False),
-)
+              Column('id', Integer, primary_key=True, nullable=False),
+              Column('code', Integer, primary_key=True, nullable=False),
+              )
 
 
 def upgrade(migrate_engine):

@@ -1,11 +1,11 @@
 {
-	"id": 1,
-	"title": "Apples Rain in New York City",
-	"slug": "apples-rain-in-new-yori-city",
-	"content": "<p>HTML that will be</p><p>dangerously inline set.</p>",
-	"volume": 108,
-	"issue": 1,
-	"date": "July 19, 2017",
-	"time": "8:27 AM",
-	"section": 3
+  "id": 1,
+  "title": "Apples Rain in New York City",
+  "slug": "apples-rain-in-new-yori-city",
+  "content": "<p>HTML that will be</p><p>dangerously inline set.</p>",
+  "volume": 108,
+  "issue": 1,
+  "date": "July 19, 2017",
+  "time": "8:27 AM",
+  "section": 3
 }

@@ -1,62 +1,59 @@
 from sqlalchemy import *
-from migrate import *
 
-
-from migrate.changeset import schema
 pre_meta = MetaData()
 post_meta = MetaData()
-article = Table('article', post_meta,
-    Column('id', Integer, primary_key=True, nullable=False),
-    Column('title', String(length=500)),
-    Column('titleSlug', String(length=500)),
-    Column('content', Text),
-    Column('p_index', Integer),
-    Column('timestamp', DateTime),
-    Column('volume', Integer),
-    Column('issue', Integer),
-    Column('section_id', Integer),
-    Column('subsection_id', Integer),
-)
+article = Table('articles', post_meta,
+                Column('id', Integer, primary_key=True, nullable=False),
+                Column('title', String(length=500)),
+                Column('titleSlug', String(length=500)),
+                Column('content', Text),
+                Column('p_index', Integer),
+                Column('timestamp', DateTime),
+                Column('volume', Integer),
+                Column('issue', Integer),
+                Column('section_id', Integer),
+                Column('subsection_id', Integer),
+                )
 
-article_tag = Table('article_tag', post_meta,
-    Column('id', Integer, primary_key=True, nullable=False),
-    Column('article_id', Integer),
-    Column('tag_id', Integer),
-)
+article_tag = Table('article_tags', post_meta,
+                    Column('id', Integer, primary_key=True, nullable=False),
+                    Column('article_id', Integer),
+                    Column('tag_id', Integer),
+                    )
 
 media = Table('media', post_meta,
-    Column('id', Integer, primary_key=True, nullable=False),
-    Column('user_id', Integer),
-    Column('article_id', Integer),
-    Column('url', String(length=600)),
-    Column('title', String(length=500)),
-    Column('caption', String(length=500)),
-    Column('isFeatured', Boolean),
-    Column('isPhoto', Boolean),
-)
+              Column('id', Integer, primary_key=True, nullable=False),
+              Column('user_id', Integer),
+              Column('article_id', Integer),
+              Column('url', String(length=600)),
+              Column('title', String(length=500)),
+              Column('caption', String(length=500)),
+              Column('isFeatured', Boolean),
+              Column('isPhoto', Boolean),
+              )
 
-role = Table('role', post_meta,
-    Column('id', Integer, primary_key=True, nullable=False),
-    Column('title', String(length=200)),
-)
+role = Table('roles', post_meta,
+             Column('id', Integer, primary_key=True, nullable=False),
+             Column('title', String(length=200)),
+             )
 
-role_user = Table('role_user', post_meta,
-    Column('id', Integer, primary_key=True, nullable=False),
-    Column('user_id', Integer),
-    Column('role_id', Integer),
-)
+role_user = Table('user_roles', post_meta,
+                  Column('id', Integer, primary_key=True, nullable=False),
+                  Column('user_id', Integer),
+                  Column('role_id', Integer),
+                  )
 
-section = Table('section', post_meta,
-    Column('id', Integer, primary_key=True, nullable=False),
-    Column('name', String(length=500)),
-    Column('description', Text),
-)
+section = Table('sections', post_meta,
+                Column('id', Integer, primary_key=True, nullable=False),
+                Column('name', String(length=500)),
+                Column('description', Text),
+                )
 
-user_article = Table('user_article', post_meta,
-    Column('id', Integer, primary_key=True, nullable=False),
-    Column('user_id', Integer),
-    Column('article_id', Integer),
-)
+user_article = Table('authorships', post_meta,
+                     Column('id', Integer, primary_key=True, nullable=False),
+                     Column('user_id', Integer),
+                     Column('article_id', Integer),
+                     )
 
 
 def upgrade(migrate_engine):

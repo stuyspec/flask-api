@@ -1,15 +1,12 @@
 from sqlalchemy import *
-from migrate import *
 
-
-from migrate.changeset import schema
 pre_meta = MetaData()
 post_meta = MetaData()
 subsection = Table('subsection', post_meta,
-    Column('id', Integer, primary_key=True, nullable=False),
-    Column('name', String(length=500)),
-    Column('description', Text),
-)
+                   Column('id', Integer, primary_key=True, nullable=False),
+                   Column('name', String(length=500)),
+                   Column('description', Text),
+                   )
 
 
 def upgrade(migrate_engine):

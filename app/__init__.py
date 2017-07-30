@@ -1,12 +1,16 @@
 from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.contrib.fixers import ProxyFix
 
-app = Flask(__name__)
 
-app.wsgi_app = ProxyFix(app.wsgi_app)
+flask_api = Flask(__name__)
 
-app.config.from_object('config')
-db = SQLAlchemy(app)
+flask_api.wsgi_app = ProxyFix(flask_api.wsgi_app)
+
+flask_api.config.from_object('config')
+
+db = SQLAlchemy(flask_api)
 
 import views
+
+
