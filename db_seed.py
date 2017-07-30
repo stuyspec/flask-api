@@ -5,12 +5,13 @@ from datetime import datetime
 
 section_sample  =  models.Section(name = "humor",
                                   slug = "humorstuff",
-                                  description = "this is the humor department")
+                                  description = "this is the humor department",
+                                  parent_slug = "humor")
 
 subsection_sample  =  models.Subsection(name = "year_review",
                                         slug = "more_humor_stuff",
                                         description = "this is humor department",
-                                        parent = "humor" )
+                                         )
 
 article_sample  =  models.Article(
     title = "george thingy",
