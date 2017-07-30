@@ -130,27 +130,26 @@ def all_articles():
         secure_articles = secure_articles[:int(limit)]
     return jsonify( {"articles": secure_articles} )
 #---------------------------------------------- POST endpoints
-def find_section_of_article(section_name):
-  section = models.Section.query.filter(models.Section.name==section_name).first()
+def get_section_by_id(section_id):
+  section = models.Section.query.filter(models.Section.id==section_id).first()
   if section == None:
     return None
   else:
     return section
-@app.route('/create_article/articles', methods=['POST'])
+@app.route('/articles', methods=['POST'])
 def create_article():
   article = models.Article(title = request.form["title"],
-                           slug = request.form["slug"],
+                           slug = None,
                            content = request.form["content"],
                            datetime = datetime.datetime.utcnow(),
                            volume = int(request.form["volume"]),
                            issue = int(request.form["issue"]),
                            isDraft = request.form["isDraft"],
-                           section = find_section_of_article(request.form["section"]),
-                           subsection = None) #remove this after section and subsection become part of the same model
+                           section = get_section_by_id(request.form["section"]))
   db.session.add(article)
   db.session.commit()
-  return jsonify({"status":"Article has been added"})
-@app.route('/create_section/sections/', methods=['POST'])
+  return jsonify({"status":"Section has been added"})
+@app.route('/sections', methods=['POST'])
 def create_section():
   section = models.Section(name= request.form["name"],
                            slug= request.form["slug"],
@@ -158,21 +157,19 @@ def create_section():
   db.session.add(section)
   db.session.commit()
   return jsonify({"Status": "Section has been sucessfully added"})
-#---------------------------------------------- DELETE endpoints
-@app.route('/delete_section/sections/<string:section_slug>', methods =['DELETE'])
+@app.route('/sections/<string:section_slug>', methods =['DELETE'])
 def delete_section(section_slug):
   section = models.Section.query.filter_by(slug=section_slug).first()
   db.session.delete(section)
   db.session.commit()
-  return jsonify({"Status":"Section has been deleted"})
-@app.route('/delete_article/articles/<string:article_slug>', methods = ['DELETE'])
+  return jsonify({"Status":"Article has been deleted"})
+@app.route('/articles/<string:article_slug>', methods = ['DELETE'])
 def delete_article(article_slug):
   article = models.Article.query.filter_by(slug = article_slug).first()
   db.session.delete(article)
   db.session.commit()
   return jsonify({"Status":"Article has been deleted"})
-#---------------------------------------------- PUT endpoints
-@app.route('/update_section/sections/<string:section_slug>', methods =['PUT'])
+@app.route('/sections/<string:section_slug>', methods =['PUT'])
 def update_section(section_slug):
   section = models.Section.query.filter_by(slug=section_slug).first()
   if request.form['name'] is not None:
@@ -183,7 +180,7 @@ def update_section(section_slug):
     section.description = request.form['description']
   db.session.commit()
   return jsonify({"Status":"Section has been updated"})
-@app.route('/update_article/articles/<string:article_slug>', methods =['PUT'])
+@app.route('/articles/<string:article_slug>', methods =['PUT'])
 def update_article(article_slug):
   article = models.Article.query.filter_by(slug = article_slug).first()
   if request.form['title'] is not None:
@@ -199,7 +196,7 @@ def update_article(article_slug):
   if request.form['isDraft'] is not None:
     article.isDraft = request.form['isDraft']
   if request.form['section'] is not None:
-    article.section = find_section_of_article(request.form['section'])
+    article.section = get_section_by_id(request.form['section'])
   article.datetime = datetime.datetime.utcnow()
   db.session.commit()
   return jsonify({"Status":"Article has been updated"})
